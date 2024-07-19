@@ -62,15 +62,16 @@ function displayInventory(data) {
             inventoryContainer.appendChild(itemContainer);
 
         });
+
+        // checkout button
+        const checkoutBtn = document.querySelector('checkout-btn');
+        checkoutBtn.addEventListener('click', handleCheckout);
+
     }
     catch (error) {
         console.error(error);
     }
 }
-
-// checkout button
-const checkoutBtn = document.querySelector('checkout-btn');
-checkoutBtn.addEventListener('click', handleCheckout);
 
 
 // handler functions 
