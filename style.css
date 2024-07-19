@@ -31,6 +31,9 @@ body {
     display: flex;
     align-items: center;
     margin: 5px 5px;
+    border-radius: 5px;
+    padding: 0 40px;
+    background: rgb(209, 162, 156);
 }
 
 button {
@@ -54,13 +57,20 @@ button.add-to-cart-btn, button.checkout-btn, button.delete-btn {
 .cart-items {
     display: flex;
     flex-direction: column;
-    padding-inline-start: 0;
-    list-style-type: none;
 }
 
 .cart-block {
     display: flex;
-    flex-direction: row;
+    flex-direction: row;   
+    align-items: center; 
+    margin: 5px 5px;
+    border-radius: 5px;
+    padding: 0 40px;
+    background: rgb(209, 162, 156);
+}
+
+button.delete-btn {
+    height: max-content;
 }
 
 button.checkout-btn {
