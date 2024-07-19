@@ -1,114 +1,147 @@
-// create variable
-const decreaseBtn = document.querySelector(".decrease-quantity-btn");
-const increaseBtn = document.querySelector(".increase-quantity-btn");
-const currentQuantity = document.querySelector(".current-quantity");
-const addToCart = document.querySelector(".add-to-cart-btn");
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('http://localhost:3000/inventory')
+        .then(response => response.json())
+        .then(data => {
+            displayInventory(data);
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error fetching the JSON data:', error);
+        });
+});
 
-console.log(addToCart)
+let cart = []; // create the cart array to use to add the item into cart
 
+function displayInventory(data) {
 
-const API = (() => {
-  const URL = "http://localhost:3000";
-  const getCart = () => {
-    // define your method to get cart data
-  };
+    try {
+        // get the container: <div class="inventory-container">
+        const inventoryContainer = document.querySelector('.inventory-container');
 
-  const getInventory = () => {
-    // define your method to get inventory data
-  };
+        data.forEach(item => {
+            // Create item container
+            const itemContainer = document.createElement('div');
+            itemContainer.className = 'item-container';
 
-  const addToCart = (inventoryItem) => {
-    // define your method to add an item to cart
-  };
+            // Create item content element: <h3 class="content-item">${item.content}</h3>
+            const content = document.createElement('h3');
+            content.className = 'content-item';
+            content.textContent = item.content;
 
-  const updateCart = (id, newAmount) => {
-    // define your method to update an item in cart
-  };
+            // Create decrease button: <button class="decrease-quantity-btn">-</button>
+            const decreaseBtn = document.createElement('button');
+            decreaseBtn.className = 'decrease-quantity-btn';
+            decreaseBtn.textContent = '-';
+            decreaseBtn.addEventListener('click', () => handleDecrease(quantity));
 
-  const deleteFromCart = (id) => {
-    // define your method to delete an item in cart
-  };
+            // Create current quantity span: <span class="current-quantity">0</span>
+            const quantity = document.createElement('span');
+            quantity.className = 'current-quantity';
+            quantity.textContent = '0'; // set default at 0
 
-  const checkout = () => {
-    // you don't need to add anything here
-    return getCart().then((data) =>
-      Promise.all(data.map((item) => deleteFromCart(item.id)))
-    );
-  };
+            // Create increase button: <button class="increase-quantity-btn">+</button>
+            const increaseBtn = document.createElement('button');
+            increaseBtn.className = 'increase-quantity-btn';
+            increaseBtn.textContent = '+';
+            increaseBtn.addEventListener('click', () => handleIncrease(quantity));
 
-  return {
-    getCart,
-    updateCart,
-    getInventory,
-    addToCart,
-    deleteFromCart,
-    checkout,
-  };
-})();
+            // Create add to cart button: <button class="add-to-cart-btn">Add to Cart</button>
+            const addToCartBtn = document.createElement('button');
+            addToCartBtn.className = 'add-to-cart-btn';
+            addToCartBtn.textContent = 'add to cart';
+            addToCartBtn.addEventListener('click', () => handleAddToCart(item, quantity));
 
-const Model = (() => {
-  // implement your logic for Model
-  class State {
-    #onChange;
-    #inventory;
-    #cart;
-    constructor() {
-      this.#inventory = [];
-      this.#cart = [];
+            // Append all elements to the item container
+            itemContainer.appendChild(content);
+            itemContainer.appendChild(decreaseBtn);
+            itemContainer.appendChild(quantity);
+            itemContainer.appendChild(increaseBtn);
+            itemContainer.appendChild(addToCartBtn);
+
+            // Append item to inventory container
+            inventoryContainer.appendChild(itemContainer);
+
+        });
     }
-    get cart() {
-      return this.#cart;
+    catch (error) {
+        console.error(error);
+    }
+}
+
+// checkout button
+const checkoutBtn = document.querySelector('checkout-btn');
+checkoutBtn.addEventListener('click', handleCheckout);
+
+
+// handler functions 
+function handleIncrease(quantity) {
+
+    // const quantity = document.querySelector('.current-quantity');
+    let currentQuantity = parseInt(quantity.textContent, 10);
+    quantity.textContent = currentQuantity + 1;
+
+    console.log(quantity.textContent)
+}
+
+function handleDecrease(quantity) {
+
+    let currentQuantity = parseInt(quantity.textContent, 10);
+    if (currentQuantity > 0) {
+        quantity.textContent = currentQuantity - 1;
     }
 
-    get inventory() {
-      return this.#inventory;
+    console.log(quantity.textContent)
+}
+
+function handleAddToCart(item, quantity) {
+    const quantityText = parseInt(quantity.textContent, 10);
+    if (quantityText > 0) {
+        console.log(`Added ${quantityText} of ${item.content} to cart.`);
+        const cartItem = cart.find(cartItem => cartItem.id === item.id);
+        if (cartItem) {
+            cartItem.quantityText += quantityText;
+        } else {
+            cart.push({ ...item, quantityText });
+        }
+
+        updateCartDisplay();
+        quantity.textContent = '0'; // Reset quantity after adding to cart
+
+    } else {
+        console.log(`No ${item.content} to add to cart.`);
     }
+}
 
-    set cart(newCart) { }
-    set inventory(newInventory) { }
+function updateCartDisplay() {
+    const cartList = document.querySelector('.cart-items');
+    cartList.innerHTML = ''; // empty
+    console.log(cartList);
 
-    subscribe(cb) { }
-  }
-  const {
-    getCart,
-    updateCart,
-    getInventory,
-    addToCart,
-    deleteFromCart,
-    checkout,
-  } = API;
-  return {
-    State,
-    getCart,
-    updateCart,
-    getInventory,
-    addToCart,
-    deleteFromCart,
-    checkout,
-  };
-})();
+    cart.forEach(item => {
+        const itemCheckout = document.createElement('h3');
+        itemCheckout.className = 'item-checkout';
+        itemCheckout.textContent = `${item.content} x ${item.quantityText}`;
 
-const View = (() => {
-  // implement your logic for View
-  return {};
-})();
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'delete';
+        deleteBtn.addEventListener('click', () => handleDelete(item));
 
-const Controller = ((model, view) => {
-  // implement your logic for Controller
-  const state = new model.State();
+        cartList.appendChild(itemCheckout);
+        cartList.appendChild(deleteBtn);
+    });
+}
 
-  const init = () => { };
-  const handleUpdateAmount = () => { };
+function handleDelete(itemDelete) {
+    // Empty the cart array, cart = []
+    cart = cart.filter(item => item.id !== itemDelete.id);
+    updateCartDisplay() // then update the cart
+}
 
-  const handleAddToCart = () => { };
+function handleCheckout() {
+    if (cart.length > 0) {
+        cart = []; // cart has nothing in there
+        updateCartDisplay(); // then update the cart
+    }
+}
 
-  const handleDelete = () => { };
-
-  const handleCheckout = () => { };
-  const bootstrap = () => { };
-  return {
-    bootstrap,
-  };
-})(Model, View);
-
-Controller.bootstrap();
