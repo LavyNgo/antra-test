@@ -119,6 +119,9 @@ function updateCartDisplay() {
     console.log(cartList);
 
     cart.forEach(item => {
+        const cartBlock = document.createElement('div');
+        cartBlock.className = 'cart-block';
+
         const itemCheckout = document.createElement('h3');
         itemCheckout.className = 'item-checkout';
         itemCheckout.textContent = `${item.content} x ${item.quantityText}`;
@@ -128,8 +131,10 @@ function updateCartDisplay() {
         deleteBtn.textContent = 'delete';
         deleteBtn.addEventListener('click', () => handleDelete(item));
 
-        cartList.appendChild(itemCheckout);
-        cartList.appendChild(deleteBtn);
+        cartBlock.appendChild(itemCheckout);
+        cartBlock.appendChild(deleteBtn);
+
+        cartList.appendChild(cartBlock)
     });
 }
 
