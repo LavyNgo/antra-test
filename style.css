@@ -9,9 +9,14 @@ body {
 }
 
 #app {
-    width: 100%;
+    margin-top: 40px;
+    width: 1000px;
+    height: 500px;
     display: flex;
     flex-direction: row;
+    border: 1px solid black;
+    border-radius: 5px;
+    background: aliceblue;
 }
 
 .inventory-container {
@@ -25,7 +30,7 @@ body {
 .cart-container {
     float: right;
     width: 50%;
-    height: 90vh;
+    height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -79,7 +84,8 @@ button.delete-btn {
 }
 
 button.checkout-btn {
-    width: 100%;
+    width: 70%;
     background: black;
     margin-top: auto;
+    padding: 15px 0;
 }
