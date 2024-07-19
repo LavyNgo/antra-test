@@ -161,9 +161,9 @@ function saveCart() {
 }
 
 function loadCart() {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-        cart = JSON.parse(storedCart);
+    const storedCartinLocalStorage = localStorage.getItem('cart');
+    if (storedCartinLocalStorage) {
+        cart = JSON.parse(storedCartinLocalStorage);
         updateCartDisplay();
     }
 }
