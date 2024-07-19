@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             displayInventory(data);
             console.log(data);
+            loadCart();
         })
         .catch(error => {
             console.error('Error fetching the JSON data:', error);
@@ -105,6 +106,7 @@ function handleAddToCart(item, quantity) {
             cart.push({ ...item, quantityText });
         }
 
+        saveCart() // keep remaining items in cart if not deleting
         updateCartDisplay();
         quantity.textContent = '0'; // Reset quantity after adding to cart
 
@@ -141,6 +143,7 @@ function updateCartDisplay() {
 function handleDelete(itemDelete) {
     // Empty the cart array, cart = []
     cart = cart.filter(item => item.id !== itemDelete.id);
+    saveCart() // keep remaining items in cart if not deleting
     updateCartDisplay() // then update the cart
 }
 
@@ -148,6 +151,20 @@ function handleCheckout() {
     if (cart.length > 0) {
         cart = []; // cart has nothing in there
         updateCartDisplay(); // then update the cart
+    }
+}
+
+
+// using local storage to save and load the items when refreshing
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function loadCart() {
+    const storedCart = localStorage.getItem('cart');
+    if (storedCart) {
+        cart = JSON.parse(storedCart);
+        updateCartDisplay();
     }
 }
 
