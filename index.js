@@ -64,7 +64,7 @@ function displayInventory(data) {
         });
 
         // checkout button
-        const checkoutBtn = document.querySelector('checkout-btn');
+        const checkoutBtn = document.querySelector('.checkout-btn');
         checkoutBtn.addEventListener('click', handleCheckout);
 
     }
